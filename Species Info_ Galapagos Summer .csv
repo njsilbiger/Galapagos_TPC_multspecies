@@ -1,0 +1,322 @@
+Species Info_ Galapagos Summer 
+Species,Species.Fullname,Organism.ID,Phylum ,Functional group ,Habitat,Light_Dark
+Egala,Eucidaris galapagensis,EgalaBk_1,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_2,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_3,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_4,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_5,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_6,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,EgalaBk_7,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_8,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_9,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala_10,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_1,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,LsemiBk_2,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_3,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,LsemiBk_4,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_5,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_6,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_7,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_8,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_9,Echinodermata,Herbivore,Subtidal,Dark
+Lsemi,Lytechinus semitubercalatus,Lsemi_10,Echinodermata,Herbivore,Subtidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_1,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_2,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_3,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_4,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,GgrapBk_5,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_6,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_7,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,GgrapBk_8,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_9,Arthropoda,Detritivore,Intertidal,Dark
+Ggrap,Grapsus grapsus ,Ggrap_10,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,CexplBk_1,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_2,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_3,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_4,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_5,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_6,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,CexplBk_7,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_8,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_9,Arthropoda,Detritivore,Intertidal,Dark
+Cexpl,Calcinus explorator,Cexpl_10,Arthropoda,Detritivore,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_1,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_2,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,TmeloBk_3,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_4,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_5,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,TmeloBk_6,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_7,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_8,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_9,Mollusca,Predator,Intertidal,Dark
+Tmelo,Thais melones,Tmelo_10,Mollusca,Predator,Intertidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_1,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_2,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,TcocBk_3,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_4,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_5,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,TcocBk_6,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_7,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_8,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_9,Cnidaria,Filter feeder,Subtidal,Dark
+Tcoc,Tubastraea coccinea,Tcoc_10,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_1,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_2,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_3,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,BgramBk_4,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_5,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_6,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_7,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_8,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,BgramBk_9,Cnidaria,Filter feeder,Subtidal,Dark
+Bgram,Bunodosoma grandis,Bgram_10,Cnidaria,Filter feeder,Subtidal,Dark
+Tplan,Thais planospira ,TplanBk_1,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_2,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,TplanBk_3,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_4,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_5,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_6,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_7,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_8,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_9,Mollusca,Predator,Subtidal,Dark
+Tplan,Thais planospira ,Tplan_10,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_1,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_2,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,LtubeBk_3,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_4,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_5,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_6,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_7,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_8,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,LtubeBk_9,Mollusca,Predator,Subtidal,Dark
+Ltube ,Leucozonia tuberculata,Ltube_10,Mollusca,Predator,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_1,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_2,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_3,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,PrubrBk_4,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_5,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,PrubrBk_6,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_7,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_8,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_9,,,Subtidal,Dark
+Prubr,Pacifigorgia rubripunctata,Prubr_10,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_1,,,Subtidal,Dark
+Acali,Aplidium californicum,AcaliBk_2,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_3,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_4,,,Subtidal,Dark
+Acali,Aplidium californicum,AcaliBk_5,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_6,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_7,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_8,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_9,,,Subtidal,Dark
+Acali,Aplidium californicum,Acali_10,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,PtubeBk_1,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_2,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_3,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_4,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_5,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_6,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_7,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,PtubeBk_8,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_9,,,Subtidal,Dark
+Ptube ,Palythoa tuberculosa? ,Ptube_10,,,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_1,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_2,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_3,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_4,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2Bk_5,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_6,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2Bk_7,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_8,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_9,Echinodermata,Herbivore,Subtidal,Dark
+Egala,Eucidaris galapagensis,Egala2_10,Echinodermata,Herbivore,Subtidal,Dark
+Bdide,Didemnum ,Bdide_1,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_2,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_3,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,BdideBk_4,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_5,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_6,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_7,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_8,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,Bdide_9,Chordata,Filter feeder,Subtidal,Dark
+Bdide,Didemnum ,BdideBk_10,Chordata,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_1,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,UkredBk_2,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_3,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_4,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_5,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_6,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_7,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,UkredBk_8,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_9,,Filter feeder,Subtidal,Dark
+Ukred,Unknown red,Ukred_10,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,UkorgBk_1,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_2,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_3,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,UkorgBk_4,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_5,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_6,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_7,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_8,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_9,,Filter feeder,Subtidal,Dark
+Ukorg,Unknown orange,Ukorg_10,,Filter feeder,Subtidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_1,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_2,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_3,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_4,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_5,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_6,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_7,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,AnigrBk_8,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,Anigr_9,Cnidaria,Filter feeder,Intertidal,Dark
+Anigr,Anthopleura nigrescens,AnigrBk_10,Cnidaria,Filter feeder,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_1,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_2,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_3,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_4,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_5,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,XcookBk_6,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_7,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,XcookBk_8,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_9,Arthropoda,Predator,Intertidal,Dark
+Xcook,Xanthodius cooksoni,Xcook_10,Arthropoda,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_1,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_2,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_3,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_4,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_5,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,EcompBk_6,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_7,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_8,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,EcompBk_9,Annelida,Predator,Intertidal,Dark
+Ecomp,Eurythoe complanata,Ecomp_10,Annelida,Predator,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_1,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_2,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_3,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,FobscBk_4,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,FobscBk_5,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_6,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_7,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_8,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_9,Mollusca,Herbivore,Intertidal,Dark
+Fobsc,Fissurella obscura,Fobsc_10,Mollusca,Herbivore,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_1,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_2,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_3,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_4,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_5,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_6,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,CfuscBk_7,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,CfuscBk_8,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_9,Mollusca,Predator,Intertidal,Dark
+Cfusc,Columbella fuscata,Cfusc_10,Mollusca,Predator,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_1,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_2,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,CgoodBk_3,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,CgoodBk_4,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_5,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,CgoodBk_6,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_7,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_8,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_9,Mollusca,Herbivore,Intertidal,Dark
+Cgood,Chton goodallii,Cgood_10,Mollusca,Herbivore,Intertidal,Dark
+Grac,Gracilaria,Grac_1,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_2,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,GracBk_3,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_4,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_5,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_6,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_7,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_8,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,GracBk_9,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_10,Rhodophyta,Primary producer,Subtidal,Light 
+Grac,Gracilaria,Grac_1,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_2,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,GracBk_3,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_4,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_5,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_6,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_7,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_8,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,GracBk_9,Rhodophyta,Primary producer,Subtidal,Dark
+Grac,Gracilaria,Grac_10,Rhodophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_1,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_2,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_3,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_4,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_5,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_6,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_7,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,PadiBk_8,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,PadiBk_9,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_10,Ochrophyta,Primary producer,Subtidal,Light 
+Padi,Padina,Padi_1,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_2,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_3,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_4,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_5,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_6,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_7,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,PadiBk_8,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,PadiBk_9,Ochrophyta,Primary producer,Subtidal,Dark
+Padi,Padina,Padi_10,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_1,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_2,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_3,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_4,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_5,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_6,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_7,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,SargBk_8,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_9,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,SargBk_10,Ochrophyta,Primary producer,Subtidal,Light 
+Sarg,Sargassum ,Sarg_1,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_2,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_3,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_4,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_5,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_6,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_7,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,SargBk_8,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,Sarg_9,Ochrophyta,Primary producer,Subtidal,Dark
+Sarg,Sargassum ,SargBk_10,Ochrophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,SecuBk_1,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_2,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_3,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_4,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,SecuBk_5,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_6,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_7,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_8,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_9,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,Secu_10,Rhodophyta,Primary producer,Subtidal,Light 
+Secu,Schizymenia ecuadoreana,SecuBk_1,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_2,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_3,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_4,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,SecuBk_5,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_6,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_7,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_8,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_9,Rhodophyta,Primary producer,Subtidal,Dark
+Secu,Schizymenia ecuadoreana,Secu_10,Rhodophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_1,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_2,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_3,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_4,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_5,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_6,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,UlvaBk_7,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,UlvaBk_8,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_9,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_10,Chlorophyta,Primary producer,Subtidal,Light 
+Ulva,Ulva,Ulva_1,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_2,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_3,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_4,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_5,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_6,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,UlvaBk_7,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,UlvaBk_8,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_9,Chlorophyta,Primary producer,Subtidal,Dark
+Ulva,Ulva,Ulva_10,Chlorophyta,Primary producer,Subtidal,Dark
