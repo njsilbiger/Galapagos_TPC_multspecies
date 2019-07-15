@@ -110,14 +110,15 @@ options("scipen"=100,digits=12) # stan doesnt like scientific notation. This fix
 stanvars <- stanvar(scode = "real Topt;
    Topt =  (b_Eh[1] * b_Th[1]) / (b_Eh[1] + (0.0000862 * b_Th[1] * log((b_Eh[1] / b_E[1]) - 1)));", 
                     block = "genquant")
+#Sys.setenv(USE_CXX14 = 1)
 fit1<-brm(
   bf(log.rate ~ lnc + log(exp(E/.0000862*(1/299.15 - 1/K))) +log(1/(1 + exp(Eh/.0000862*(1/Th - 1/K)))), 
             lnc ~ 1 + (1|Organism.ID), Eh~1, Th~1 , E~1 ,  nl = TRUE ),
             data = Acali,
             family = student(),
             prior = c(
-              prior(normal(0,10), nlpar = "E", lb = 0),  # set the priors
-              prior(normal(0,10), nlpar = "Eh", lb = 0),
+              prior(normal(0,10), nlpar = "E"),  # set the priors
+              prior(normal(0,10), nlpar = "Eh"),
               prior(normal(320, 10), nlpar = "Th", lb = 0),
               prior(normal(0, 10), nlpar = "lnc", lb = 0)
             ), control = list(adapt_delta = 0.99, max_treedepth = 20), # force stan to take smaller steps to reduce divergent errors
@@ -220,13 +221,14 @@ params<-fit1 %>%
   median_qi()
 
 # find Tmax
-Tmax<-Acali %>%
-  group_by(Organism.ID, .draw) %>%
-  data_grid(K = seq(min(K),max(K)+10, by = 0.01)) %>%
-  add_predicted_draws(fit1) 
+## UNCOMMENT THIS WHEN IT STOPS CRASHING
+# Tmax<-Acali %>%
+#   group_by(Organism.ID, .draw) %>%
+#   data_grid(K = seq(min(K),max(K)+10, by = 0.01)) %>%
+#   add_predicted_draws(fit1) 
 
-Tmax<-
-  Tmax[which(Tmax$K>params[params$.variable=='Topt',2] && Tmax$value<1),]
+# Tmax<-
+#   Tmax[which(Tmax$K>params[params$.variable=='Topt',2] && Tmax$value<1),]
 
 # 
 # fit1.data %>%
