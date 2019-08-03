@@ -165,19 +165,6 @@ fit1<-brm(
             ), control = list(adapt_delta = 0.99, max_treedepth = 20), # force stan to take smaller steps to reduce divergent errors
   cores = 4, chains = 4, seed = 126, iter = 3000, warmup = 2000,stanvars = stanvars, silent = TRUE) 
 
-# only print params if it exists
-if (exists(x = 'fit1')) {
-  # calculate 95%Ci
-  params<-fit1 %>%
-    gather_draws( b_E_Intercept, b_Eh_Intercept, b_lnc_Intercept, b_Th_Intercept, sd_Organism.ID__lnc_Intercept, sigma, Topt) %>%
-    median_qi()
-  
-  return(params)
-} else {
-  params<-as.data.frame(x = matrix(NA,nrow = 1, ncol = 7))
-  colnames(params)<-c('.variable',' .value','.lower', '.upper', '.width', '.point',' .interval')
-  return(params)
-}
 
 
 if (PlotDiagnostics==TRUE){
@@ -279,6 +266,20 @@ TPC_plots<-plot_grid(title, TPC_plots1, nrow = 2 , rel_heights=c(0.1, 1))
 ggsave(filename = paste0('Output/TPC_plots/TPC_',spec.name,LD,'.pdf'), plot = TPC_plots, width = 8, height = 5)
 }
 
+# only print params if it exists
+#if (exists(x = 'fit1')) {
+# calculate 95%Ci
+params<-fit1 %>%
+  gather_draws( b_E_Intercept, b_Eh_Intercept, b_lnc_Intercept, b_Th_Intercept, sd_Organism.ID__lnc_Intercept, sigma, Topt) %>%
+  median_qi()
+
+return(params)
+#} else {
+#  params<-as.data.frame(x = matrix(NA,nrow = 1, ncol = 7))
+#  colnames(params)<-c('.variable',' \.value','.lower', '.upper', '.width', '.point','.interval')
+#  return(params)
+#}
+
 # print when each species is done
 print(paste(spec.name, 'is done'))
 rm(fit1) # clear the fit
@@ -286,23 +287,163 @@ rm(fit1) # clear the fit
 }
 
 p<-as.data.frame(x = matrix(NA,nrow = 1, ncol = 7))
-colnames(p)<-c('.variable',' .value','.lower', '.upper', '.width', '.point',' .interval')
+colnames(p)<-c('.variable','.value','.lower', '.upper', '.width', '.point','.interval')
 
 #Same functions, but skips over species with an error
 BayeTPC_noerror <- possibly(BayeTPC, otherwise = p)
 
 #Run Bayesian TPC for all species, export plots, and save the 95% CI of each parameter
 Param.output<-mydata %>%
-  filter(Species == 'Padi') %>% # do everything but Acali for now
+#  filter(Species == 'Padi') %>% # do everything but Acali for now
   group_by(Species, rate.type) %>%
   do(BayeTPC_noerror(mydata = ., SpeciesName = unique(.$Species)))
 
-  nest() %>%
-  mutate(params =  data %>%
-           map(BayeTPC_noerror(mydata = data, SpeciesName = unique(.$Species), 
-                               rate = unique(.$rate.type))))
+write.csv(Param.output, file = 'Data/paramoutput.csv', row.names = NULL) # write out the results
+  # nest() %>%
+  # mutate(params =  data %>%
+  #          map(BayeTPC_noerror(mydata = data, SpeciesName = unique(.$Species), 
+  #                              rate = unique(.$rate.type))))
 
-  
+
+# remove the species and rates that did not converge
+not.converge<-which(is.na(Param.output$.value))
+Param.output<-Param.output[-not.converge,]
+
+# Put Topt aand Th in celcius
+Param.output[Param.output$.variable=='Topt', c(4:6)] <-Param.output[Param.output$.variable=='Topt', c(4:6)]-273.15
+Param.output[Param.output$.variable=='b_Th_Intercept', c(4:6)] <-Param.output[Param.output$.variable=='b_Th_Intercept', c(4:6)]-273.15
+
+# add a column for plotting names
+prettynames<-data.frame(.variable = unique(Param.output$.variable))
+prettynames$varnames<-c("E (eV)","Eh","b(Tc)","Th (°C)", "Within species variance","Observation error", "Thermal Optimum (°C)")
+
+# add species full name
+sp.fullnames<- mydata %>%
+  select(Species.Fullname, Species)%>%
+  unique() %>%
+  filter(Species.Fullname != '<NA>') # remove the NA
+
+Sp.info<-left_join(Sp.info, sp.fullnames)
+
+Param.output<-left_join(Param.output,prettynames) %>% # make the names easier for plotting
+  left_join(.,Sp.info) %>% # join with the species info
+  filter(Species != 'Egala') # remove the first Egala since this was done twice
+
+# Plot the Topt in decending order for R colored by functional group
+paramplots<-Param.output %>%
+  filter(rate.type == 'R')%>%
+  group_by(.variable) %>%
+  nest() %>%
+  mutate(plot = map2(data, .variable, ~ggplot(., aes(x=reorder(Species, -.value), y=.value, color = Functional.group)) +
+  theme_bw()+
+  theme(legend.title=element_text(colour="black", size=12), axis.text.x=element_text(face="bold", color="black", size=12), axis.text.y=element_text(face="bold", color="black", size=13), axis.title.x = element_text(color="black", size=18, face="bold"), axis.title.y = element_text(color="black", size=18, face="bold"),panel.grid.major=element_blank(), panel.grid.minor=element_blank()) +
+  geom_point(position="dodge", size=2) +
+  scale_y_continuous(expand = c(0,0.2)) + scale_x_discrete(expand = c(0.1,0.1)) + #adjust space around graph to left and right of discrtet values (GP and C)
+  theme(legend.text=element_text(size=rel(1))) + #makes legend elements larger
+  geom_errorbar(aes(ymax=.upper, ymin=.lower), position=position_dodge(width=0.9), width=0.1) +
+  labs(x="", y=unique(.$varnames)) +
+  theme(legend.position="none",axis.text.x = element_text(angle = 90, hjust = 1))))
+#save the results
+#map2(paste0("Output/resultplots/",paramplots$.variable, "_fungroup.pdf"), paramplots$plot, ggsave)
+
+#extract legend
+legend <- get_legend(
+    paramplots$plot[[1]] + 
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "bottom", legend.title = element_blank())
+)
+
+# put everything together
+p1<-plot_grid(paramplots$plot[[1]],paramplots$plot[[2]], paramplots$plot[[3]],
+          paramplots$plot[[5]], paramplots$plot[[6]], paramplots$plot[[7]])
+results_by_FunGroup<-plot_grid(p1,legend, ncol = 1, rel_heights = c(1, .1))
+
+ggsave(filename = 'Output/resultplots/results_by_FunGroup.pdf', results_by_FunGroup, width = 10, height = 8)
+
+## Same plot, but color by intertidal/subtidal
+
+# Plot the Topt in decending order for R colored by functional group
+paramplots2<-Param.output %>%
+  filter(rate.type == 'R')%>%
+  group_by(.variable) %>%
+  nest() %>%
+  mutate(plot = map2(data, .variable, ~ggplot(., aes(x=reorder(Species, -.value), y=.value, color = Habitat)) +
+                       theme_bw()+
+                       theme(legend.title=element_text(colour="black", size=12), axis.text.x=element_text(face="bold", color="black", size=12), axis.text.y=element_text(face="bold", color="black", size=13), axis.title.x = element_text(color="black", size=18, face="bold"), axis.title.y = element_text(color="black", size=18, face="bold"),panel.grid.major=element_blank(), panel.grid.minor=element_blank()) +
+                       geom_point(position="dodge", size=2) +
+                       scale_y_continuous(expand = c(0,0.2)) + scale_x_discrete(expand = c(0.1,0.1)) + #adjust space around graph to left and right of discrtet values (GP and C)
+                       theme(legend.text=element_text(size=rel(1))) + #makes legend elements larger
+                       geom_errorbar(aes(ymax=.upper, ymin=.lower), position=position_dodge(width=0.9), width=0.1) +
+                       labs(x="", y=unique(.$varnames)) +
+                       theme(legend.position="none",axis.text.x = element_text(angle = 90, hjust = 1))))
+
+p2<-plot_grid(paramplots2$plot[[1]],paramplots2$plot[[2]], paramplots2$plot[[3]],
+              paramplots2$plot[[5]], paramplots2$plot[[6]], paramplots2$plot[[7]])
+#extract legend
+legend <- get_legend(
+  paramplots2$plot[[1]] + 
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "bottom", legend.title = element_blank())
+)
+results_by_habitat<-plot_grid(p2,legend, ncol = 1, rel_heights = c(1, .1))
+
+ggsave(filename = 'Output/resultplots/results_by_habitat.pdf', results_by_habitat, width = 10, height = 8)
+
+# make a PCA
+# spread data
+
+Param.spread<-Param.output %>% 
+  select(-c(.lower,.upper,.width,.point,.interval,varnames))%>%
+  filter(rate.type=="R") %>%
+  spread(.variable, .value)
+
+pca<-prcomp(Param.spread[,c(8:10,14)], center = TRUE, scale. = TRUE)
+
+# bring together the PCA with the species info
+pca.all<-cbind(pca$x, Param.spread[, c(1:7)])
+
+# get the loadings
+df_out_r <- as.data.frame(pca$rotation)
+df_out_r$feature <- row.names(df_out_r)
+
+#pca.all<-pca.all[-18,]
+# PCA by habitat
+habplot<-ggplot(pca.all, color =Habitat)+
+  geom_point(aes(x = PC1, y = PC2, color = Habitat))+
+  stat_ellipse(aes(x = PC1, y = PC2, color = Habitat))+
+  geom_segment(data = df_out_r, aes(x = 0, y = 0,xend=PC1*3, yend=PC2*3))+
+  geom_text(data = df_out_r, aes(x=PC1*3, y=PC2*3,label = feature))+
+  theme_bw()+
+  xlim(-6,6)+
+  ylim(-3,3)+
+  ggtitle('Habitat')
+
+
+fungplot<-ggplot(pca.all, color =Functional.group)+
+  geom_point(aes(x = PC1, y = PC2, color = Functional.group))+
+ # stat_ellipse(aes(x = PC1, y = PC2, color = Functional.group))+
+  geom_segment(data = df_out_r, aes(x = 0, y = 0,xend=PC1*3, yend=PC2*3))+
+  geom_text(data = df_out_r, aes(x=PC1*3, y=PC2*3,label = feature))+
+  theme_bw()+
+  xlim(-6,6)+
+  ylim(-3,3)+
+  ggtitle('Functional group')
+
+
+phylagplot<-ggplot(pca.all, color =Phylum)+
+  geom_point(aes(x = PC1, y = PC2, color = Phylum))+
+  # stat_ellipse(aes(x = PC1, y = PC2, color = Functional.group))+
+  geom_segment(data = df_out_r, aes(x = 0, y = 0,xend=PC1*3, yend=PC2*3))+
+  geom_text(data = df_out_r, aes(x=PC1*3, y=PC2*3,label = feature))+
+  theme_bw()+
+  xlim(-6,6)+
+  ylim(-3,3)+
+  ggtitle('Phylum')
+
+pcaplot<-plot_grid(habplot, fungplot, phylagplot, nrow =1)
+ggsave(filename = 'Output/resultplots/pcaplots.pdf', plot = pcaplot, width = 12, height = 3)
+
+# make a dendrogram https://jcoliver.github.io/learn-r/008-ggplot-dendrograms-and-heatmaps.html
 # find Tmax
 ## UNCOMMENT THIS WHEN IT STOPS CRASHING
 # Tmax<-Acali %>%
