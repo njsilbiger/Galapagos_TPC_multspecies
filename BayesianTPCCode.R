@@ -91,6 +91,16 @@ Photo.R2 <- mydata %>%
   mutate(Fragment.ID=paste0(Organism.ID, "_", rate.type)) %>%
   left_join(.,Sp.info)
 
+# put in the full species names for light
+algaenames<-mydata %>%
+  filter(Functional.group=='Producer' & Light_Dark=='Dark') %>%
+  select(Species.Fullname, Species)%>%
+  unique()
+
+for(i in 1:length(algaenames)){
+mydata[which(mydata$Species==algaenames[i,2]),'Species.Fullname']<-algaenames[i,1]
+}
+
 #rename light darks
 #Photo.R2$light_dark <- ifelse(Photo.R2$light_dark=="L", "light", "dark")
 
@@ -119,11 +129,12 @@ mydata$log.rate<-log(mydata$umol.cm2.hr+1)
 
 # Make a function that runs the analysis 
 
-BayeTPC<-function(mydata = mydata, SpeciesName,  PlotDiagnostics = TRUE, PlotResults = TRUE){
-Species.selected<-mydata[mydata$Species==SpeciesName,]
+BayeTPC<-function(mydata = mydata, SpeciesName, rate, PlotDiagnostics = TRUE, PlotResults = TRUE){
+#Species.selected<-mydata[mydata$Species==SpeciesName & mydata$rate.type==rate,]
+Species.selected<-mydata
 spec.name<-unique(Species.selected$Species.Fullname)
 y<-Species.selected$log.rate
-LD<-unique(Species.selected$Light_Dark) # light or dark for the algae
+LD<-unique(Species.selected$rate.type) # light or dark for the algae
 
 options("scipen"=100,digits=12) # stan doesnt like scientific notation. This fixes that
 
@@ -154,14 +165,28 @@ fit1<-brm(
             ), control = list(adapt_delta = 0.99, max_treedepth = 20), # force stan to take smaller steps to reduce divergent errors
   cores = 4, chains = 4, seed = 126, iter = 3000, warmup = 2000,stanvars = stanvars, silent = TRUE) 
 
+# only print params if it exists
+if (exists(x = 'fit1')) {
+  # calculate 95%Ci
+  params<-fit1 %>%
+    gather_draws( b_E_Intercept, b_Eh_Intercept, b_lnc_Intercept, b_Th_Intercept, sd_Organism.ID__lnc_Intercept, sigma, Topt) %>%
+    median_qi()
+  
+  return(params)
+} else {
+  params<-as.data.frame(x = matrix(NA,nrow = 1, ncol = 7))
+  colnames(params)<-c('.variable',' .value','.lower', '.upper', '.width', '.point',' .interval')
+  return(params)
+}
+
 
 if (PlotDiagnostics==TRUE){
 ## assess the fits
 posterior <-  posterior_samples(fit1)
 #str(posterior)
-post <- as.data.frame(fit1)
-post %>% select( nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_Intercept) %>% cor() # correlation matrix
-(coef_mean <- post %>% select(nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_Intercept) %>% summarise_all(mean) %>% as.numeric) # parameter means
+#post <- as.data.frame(fit1)
+#post %>% select( nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_Intercept) %>% cor() # correlation matrix
+#(coef_mean <- post %>% select(nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_Intercept) %>% summarise_all(mean) %>% as.numeric) # parameter means
 
 # convergence diagnostics -------------------------------------------------
 # plotting one at a time
@@ -253,27 +278,31 @@ title <- ggdraw() + draw_label(spec.name, fontface='italic')
 TPC_plots<-plot_grid(title, TPC_plots1, nrow = 2 , rel_heights=c(0.1, 1))
 ggsave(filename = paste0('Output/TPC_plots/TPC_',spec.name,LD,'.pdf'), plot = TPC_plots, width = 8, height = 5)
 }
-# calculate 95%Ci
-params<-fit1 %>%
-  gather_draws( b_E_Intercept, b_Eh_Intercept, b_lnc_Intercept, b_Th_Intercept, sd_Organism.ID__lnc_Intercept, sigma, Topt) %>%
-  median_qi()
 
-return(params)
 # print when each species is done
 print(paste(spec.name, 'is done'))
+rm(fit1) # clear the fit
 
 }
 
+p<-as.data.frame(x = matrix(NA,nrow = 1, ncol = 7))
+colnames(p)<-c('.variable',' .value','.lower', '.upper', '.width', '.point',' .interval')
+
 #Same functions, but skips over species with an error
-BayeTPC_noerror <- possibly(BayeTPC, otherwise = NULL)
+BayeTPC_noerror <- possibly(BayeTPC, otherwise = p)
 
 #Run Bayesian TPC for all species, export plots, and save the 95% CI of each parameter
 Param.output<-mydata %>%
-  filter(Species == 'Acali'| Species == 'Padi') %>% # do everything but Acali for now
-  group_by(Species, Light_Dark) %>%
+  filter(Species == 'Padi') %>% # do everything but Acali for now
+  group_by(Species, rate.type) %>%
   do(BayeTPC_noerror(mydata = ., SpeciesName = unique(.$Species)))
 
+  nest() %>%
+  mutate(params =  data %>%
+           map(BayeTPC_noerror(mydata = data, SpeciesName = unique(.$Species), 
+                               rate = unique(.$rate.type))))
 
+  
 # find Tmax
 ## UNCOMMENT THIS WHEN IT STOPS CRASHING
 # Tmax<-Acali %>%
