@@ -1,13 +1,17 @@
+### TPC code for Galapagos inverts collect by JB and MB
+### Data analysis by Nyssa Silbiger
+### Last edited on 8/2/2019
+#########################################################
+
+
+
 rm(list=ls())
 
-##Install packages
-# load packages
-#library(nls.multstart)
+##Load packages ##########
+
 library(broom)
 library(purrr)
 library(tidyverse)
-#library(nlstools)
-#library(nls2)
 library(ggforce)
 library(gridExtra)
 library(brms)
@@ -16,46 +20,56 @@ library(modelr)
 library(bayesplot)
 
 
-#load data
+#load data ########################
 
-photo.data <- read.csv("GalapagosRates.csv")
+photo.data <- read.csv("Data/GalapagosRates.csv")
 photo.data$X <- NULL
 #View(photo.data)
 #glimpse(photo.data)
 
+# species list
+Sp.info<-read.csv('Data/SpeciesList.csv')
+
+# list of files to remove 
+BadData<-read.csv('Data/quality_control_inverts.csv')
+
+## remove the bad data after QC #################
+badrows<-which(photo.data$ID %in% BadData$ID)
+
+photo.data<-photo.data[-badrows,]
+
 # remove the NAs from the data
 #photo.data<-photo.data[-which(is.na(photo.data$umol.cm2.hr)),]
 
-# remove the three organisms that are wrong (had too much messy respiration files)
-#remove<-c('Egala_Bart_1','Egala_Ibbet_3','Egala_Botel_2', 'Egala_Corm_10')
 
-#bad.ID<-which(photo.data$Organism.ID %in% remove)
-#photo.data<-photo.data[-bad.ID,]
-
-
-
+# Clean Data for Analysis #################
 mydata <- photo.data
 ## clean some of the bad data
-#bad<-which(mydata$umol.cm2.hr< -40)
-bad1<-c(which(mydata$Species=='Ptube' & mydata$umol.cm2.hr>70), which(mydata$Species=='Tcoc' & mydata$umol.cm2.hr>75),
-        which(mydata$Species=='Lsemi' & mydata$Temp.Cat<20 & mydata$umol.cm2.hr>25),
-        which(mydata$Species=='Secu' & mydata$umol.cm2.hr>300 & mydata$Light_Dark=='Dark'), which(mydata$umol.cm2.hr< -40))
-mydata<-mydata[-bad1,]
+bad<-which(mydata$umol.cm2.hr< 0)
+mydata<-mydata[-bad,]
 
-Sp.info<-read.csv('SpeciesList.csv')
+## might need to add this back
+ bad1<-c( which(mydata$Species=='Bgran' & mydata$umol.cm2.hr>70), 
+         which(mydata$Species=='Secu' & mydata$umol.cm2.hr>700), which(mydata$Species=='Ltube' & mydata$umol.cm2.hr>31),
+         which(mydata$Species=='Tcoc' & mydata$umol.cm2.hr<5),which(mydata$Species=='Egala2' & mydata$umol.cm2.hr<6 & mydata$Temp.C>30),
+         which(mydata$Species=='Cfusc' & mydata$umol.cm2.hr>400)
+         )
+ mydata<-mydata[-bad1,]
+
+ggplot(mydata) +
+  geom_point(aes(x = Temp.C, y = umol.cm2.hr, group =Species ))+
+  facet_wrap(~Species, scales = "free_y")
+
 
 #join with the mydata
 mydata<-left_join(mydata,Sp.info)
 
-# read in the species info 
 # remove respiration rates that are less then 0 and make them 0
-
 mydata$umol.cm2.hr[mydata$Light_Dark=='Dark']<-ifelse(mydata$umol.cm2.hr[mydata$Light_Dark=='Dark']<0,0,mydata$umol.cm2.hr[mydata$Light_Dark=='Dark'])
 
 #mydata$log.rate <- log(mydata$umol.cm2.hr+1)  #logging and adding 0.1 because a log of zero does not exist
 
 # make GP by adding light to dark (NP to R)
-
 #light will be assigned NP for net photosynthesis 
 mydata$rate.type <-ifelse(mydata$Light_Dark=='Light', "NP", "R")
 mydata$rate.type<-as.factor(mydata$rate.type)
@@ -100,64 +114,62 @@ mydata<-mydata %>%
 #log rate
 mydata$log.rate<-log(mydata$umol.cm2.hr+1)
 
-
-Acali<-mydata[mydata$Species=='Lsemi',]
+#### Run Bayesian analysis ##############
+Species.selected<-mydata[mydata$Species=='Egala2',]
+spec.name<-unique(Species.selected$Species.Fullname)
+y<-Species.selected$log.rate
 
 options("scipen"=100,digits=12) # stan doesnt like scientific notation. This fixes that
 
 # fit the model
-# create a generated quantities block for Topt
-stanvars <- stanvar(scode = "real Topt;
-   Topt =  (b_Eh[1] * b_Th[1]) / (b_Eh[1] + (0.0000862 * b_Th[1] * log((b_Eh[1] / b_E[1]) - 1)));", 
+# create a generated quantities block for Topt and for posterior predictive checks
+stanvars <- stanvar(scode = "real Topt; vector[N] y_new;
+vector[N] nlp_lnc = X_lnc * b_lnc;
+  vector[N] nlp_Eh = X_Eh * b_Eh;
+  vector[N] nlp_Th = X_Th * b_Th;
+  vector[N] nlp_E = X_E * b_E;
+Topt =  (b_Eh[1] * b_Th[1]) / (b_Eh[1] + (0.0000862 * b_Th[1] * log((b_Eh[1] / b_E[1]) - 1)));
+for (n in 1:N) {  
+nlp_lnc[n] += r_1_lnc_1[J_1[n]] * Z_1_lnc_1[n];
+ y_new[n] = student_t_rng(nu, nlp_lnc[n] + log(exp(nlp_E[n] / 0.0000862 * (1 / 299.15 - 1 / C_1[n]))) + log(1 / (1 + exp(nlp_Eh[n] / 0.0000862 * (1 / nlp_Th[n] - 1 / C_1[n])))), sigma);};",
                     block = "genquant")
-#Sys.setenv(USE_CXX14 = 1)
+
+
 fit1<-brm(
   bf(log.rate ~ lnc + log(exp(E/.0000862*(1/299.15 - 1/K))) +log(1/(1 + exp(Eh/.0000862*(1/Th - 1/K)))), 
             lnc ~ 1 + (1|Organism.ID), Eh~1, Th~1 , E~1 ,  nl = TRUE ),
-            data = Acali,
+            data = Species.selected,
             family = student(),
             prior = c(
-              prior(normal(0,10), nlpar = "E"),  # set the priors
-              prior(normal(0,10), nlpar = "Eh"),
+              prior(normal(0,10), nlpar = "E", lb = 0),  # set the priors
+              prior(normal(0,10), nlpar = "Eh", lb = 0),
               prior(normal(320, 10), nlpar = "Th", lb = 0),
               prior(normal(0, 10), nlpar = "lnc", lb = 0)
             ), control = list(adapt_delta = 0.99, max_treedepth = 20), # force stan to take smaller steps to reduce divergent errors
   cores = 4, chains = 4, seed = 126, iter = 3000, warmup = 2000,stanvars = stanvars) 
- # use multiple cores for parallel computing
-# pull out all the draws and calculate Topt with appropriate error
-# fit1.data<-as.data.frame(fit1) 
-# #Topt function
-# get_topt <- function(E, Th, Eh){
-#   return((Eh*Th)/(Eh + (8.62e-05 *Th*log((Eh/E) - 1))))
-# }
-# 
-#  dataList =  standata(fit1)
-# # try with stan model with Topt in generated qualtity
-# fit <- stan(file = 'GalapagosTPCStan.stan', data = dataList, iter=2000, warmup=1000, cores = 3, control = list(adapt_delta = 0.99, max_treedepth = 20))
-# 
-# ppc_intervals(
-#   y = Acali$log.rate,
-#   yrep = posterior_predict(fit),
-#   x = Acali$K,
-#   prob = 0.5
-# ) +
-#   labs(
-#     x = "Weight (1000 lbs)",
-#     y = "MPG",
-#     title = "50% posterior predictive intervals \nvs observed miles per gallon",
-#     subtitle = "by vehicle weight"
-#   ) +
-#   panel_bg(fill = "gray95", color = NA) +
-#   grid_lines(color = "white")
-# 
-# ### plot the within species variance by species... which ones species have more variability in tpc? 
-# 
-# # split the underscores for clean names and gather the data so there is a columnen for Organism ID for easier plotting
-# 
-# 
-# fit1.data$Topt<-get_topt(E = fit1.data$b_E_Intercept, Eh = fit1.data$b_Eh_Intercept, Th = fit1.data$b_Th_Intercept)
-# 
 
+
+## assess the fits
+posterior <-  posterior_samples(fit1)
+#str(posterior)
+post <- as.data.frame(fit1)
+post %>% select( nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_Intercept) %>% cor() # correlation matrix
+(coef_mean <- post %>% select(nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_Intercept) %>% summarise_all(mean) %>% as.numeric) # parameter means
+
+# convergence diagnostics -------------------------------------------------
+# plotting one at a time
+#plot(fit1,'b_lnc_Intercept')
+plot(fit1) # all of them
+
+## posterior predictive checks
+y_rep <- as.matrix(fit1, pars = "y_new")
+dim(y_rep)
+ppc_dens_overlay(y, y_rep[1:200, ]) # comparing density of y with densities of y over 200 posterior draws.
+ppc_stat(y = y, yrep = y_rep, stat = "mean") # compare estimates of summary statistics
+ppc_scatter_avg(y = y, yrep = y_rep) # observed vs predicted with 1:1 line
+
+
+### plot the results
 # plot the population level effects
 pt1<-marginal_effects(fit1)
 
@@ -165,15 +177,16 @@ pt1<-marginal_effects(fit1)
 pt2<-ggplot(as.data.frame(pt1$K))+ # pull pur the fitted data
   geom_line(aes(K-273.15, estimate__))+ # convert temp to celcius
   geom_ribbon(aes(K-273.15, ymin = lower__, ymax = upper__), alpha=0.3)+
-  geom_point(data = Acali, aes(x = K-273.15, y = log.rate)) +# add the raw data
+  geom_point(data = Species.selected, aes(x = K-273.15, y = log.rate)) +# add the raw data
   theme_bw()+
   xlab(expression(paste('Temperature (',~degree,'C)')))+
   ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
-  theme(text = element_text(size=18))
+  theme(text = element_text(size=18), title = element_text(face="italic"))+
+  ggtitle(spec.name)
 
 # plot the individual effects
-conditions <- data.frame(Organism.ID = unique(Acali$Organism.ID))
-rownames(conditions) <- unique(Acali$Organism.ID)
+conditions <- data.frame(Organism.ID = unique(Species.selected$Organism.ID))
+rownames(conditions) <- unique(Species.selected$Organism.ID)
 me_loss <- marginal_effects(
   fit1, conditions = conditions, 
   re_formula = NULL, method = "predict"
@@ -183,12 +196,13 @@ me_loss <- marginal_effects(
 # individual level
 pt3<-ggplot(as.data.frame(me_loss$K))+ # pull pur the fitted data
   geom_line(aes(K-273.15, estimate__, group = cond__, color = cond__, lwd = 1))+ # convert temp to celcius
-  geom_point(data = Acali, aes(x = K-273.15, y = log.rate)) +# add the raw data
+  geom_point(data = Species.selected, aes(x = K-273.15, y = log.rate)) +# add the raw data
   theme_bw()+
   scale_color_brewer(palette = "Set2")+
   xlab(expression(paste('Temperature (',~degree,'C)')))+
   ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
-  theme(text = element_text(size=18),legend.position = "none")
+  theme(text = element_text(size=18),legend.position = "none", title = element_text(face="italic"))+
+  ggtitle(spec.name)
 
 # plot the individual effects
 # conditions <- data.frame(Species = unique(Acali$Species))
@@ -200,19 +214,20 @@ pt3<-ggplot(as.data.frame(me_loss$K))+ # pull pur the fitted data
 # plot(me_loss, ncol = 2, points = TRUE)
 
 # plot all the fits on the same plot with error
-Acali %>%
+Species.selected %>%
   group_by(Organism.ID) %>%
   data_grid(K = seq(min(K),max(K)+10, by = 0.1)) %>% # make the predictions go to 10 degrees plus 
   #data_grid(K = seq_range(K+10, n = 150)) %>%
   add_fitted_draws(fit1) %>%
   ggplot(aes(x = K-273.15, y = log.rate, color = ordered(Organism.ID))) +
   stat_lineribbon(aes(y = .value), .width = c(0.95)) + # 95%CI
-  geom_point(data = Acali) +
+  geom_point(data = Species.selected) +
   scale_fill_brewer(palette = "Greys") +
   scale_color_brewer(palette = "Set2")+
   theme_bw()+ xlab(expression(paste('Temperature (',~degree,'C)')))+
   ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
-  theme(text = element_text(size=18),legend.position = "none")
+  theme(text = element_text(size=18),legend.position = "none", title = element_text(face="italic"))+
+  ggtitle(spec.name)
 
 
 # calculate 95%Ci
@@ -233,11 +248,4 @@ params<-fit1 %>%
 # 
 # fit1.data %>%
 #   median_qi(Topt)
-
-plot(fit1)
-
-#plot(density(fit1.data$Topt))
-
-# PP check
-pp_check(fit1)
 
