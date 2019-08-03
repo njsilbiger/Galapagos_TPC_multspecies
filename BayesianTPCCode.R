@@ -18,6 +18,7 @@ library(brms)
 library(tidybayes)
 library(modelr)
 library(bayesplot)
+library(cowplot)
 
 
 #load data ########################
@@ -115,7 +116,11 @@ mydata<-mydata %>%
 mydata$log.rate<-log(mydata$umol.cm2.hr+1)
 
 #### Run Bayesian analysis ##############
-Species.selected<-mydata[mydata$Species=='Egala2',]
+
+# Make a function that runs the analysis 
+
+BayeTPC<-function(mydata = mydata, SpeciesName,  PlotDiagnostics = TRUE, PlotResults = TRUE){
+Species.selected<-mydata[mydata$Species==SpeciesName,]
 spec.name<-unique(Species.selected$Species.Fullname)
 y<-Species.selected$log.rate
 
@@ -149,6 +154,7 @@ fit1<-brm(
   cores = 4, chains = 4, seed = 126, iter = 3000, warmup = 2000,stanvars = stanvars) 
 
 
+if (PlotDiagnostics==TRUE){
 ## assess the fits
 posterior <-  posterior_samples(fit1)
 #str(posterior)
@@ -159,19 +165,30 @@ post %>% select( nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_In
 # convergence diagnostics -------------------------------------------------
 # plotting one at a time
 #plot(fit1,'b_lnc_Intercept')
-plot(fit1) # all of them
+# plot the traceplots
+pdf(paste0('Output/diagnostics/traceplots_',spec.name,'.pdf'))
+plot(fit1, ask = FALSE, newpage = FALSE) # all of them
+dev.off()
 
 ## posterior predictive checks
 y_rep <- as.matrix(fit1, pars = "y_new")
 dim(y_rep)
-ppc_dens_overlay(y, y_rep[1:200, ]) # comparing density of y with densities of y over 200 posterior draws.
-ppc_stat(y = y, yrep = y_rep, stat = "mean") # compare estimates of summary statistics
-ppc_scatter_avg(y = y, yrep = y_rep) # observed vs predicted with 1:1 line
+check1<-ppc_dens_overlay(y, y_rep[1:200, ]) # comparing density of y with densities of y over 200 posterior draws.
+check2<-ppc_stat(y = y, yrep = y_rep, stat = "mean") # compare estimates of summary statistics
+check3<-ppc_scatter_avg(y = y, yrep = y_rep) # observed vs predicted with 1:1 line
 
+ppcheckfig<-plot_grid(check1, check2, check3, labels = 'AUTO', nrow = 1 )
+# add title
+title <- ggdraw() + draw_label(spec.name, fontface='italic')
+ppcheckf<-plot_grid(title, ppcheckfig,nrow = 2 , rel_heights=c(0.1, 1))
+  
+ggsave(filename = paste0('Output/diagnostics/ppchecks_',spec.name,'.pdf'),plot = ppcheckf, width = 9, height = 6 )
+
+}
 
 ### plot the results
 # plot the population level effects
-pt1<-marginal_effects(fit1)
+#pt1<-marginal_effects(fit1)
 
  #population level 
 pt2<-ggplot(as.data.frame(pt1$K))+ # pull pur the fitted data
@@ -181,28 +198,28 @@ pt2<-ggplot(as.data.frame(pt1$K))+ # pull pur the fitted data
   theme_bw()+
   xlab(expression(paste('Temperature (',~degree,'C)')))+
   ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
-  theme(text = element_text(size=18), title = element_text(face="italic"))+
-  ggtitle(spec.name)
+  theme(text = element_text(size=18), title = element_text(face="italic"))
+  
 
 # plot the individual effects
-conditions <- data.frame(Organism.ID = unique(Species.selected$Organism.ID))
-rownames(conditions) <- unique(Species.selected$Organism.ID)
-me_loss <- marginal_effects(
-  fit1, conditions = conditions, 
-  re_formula = NULL, method = "predict"
-)
+# conditions <- data.frame(Organism.ID = unique(Species.selected$Organism.ID))
+# rownames(conditions) <- unique(Species.selected$Organism.ID)
+# me_loss <- marginal_effects(
+#   fit1, conditions = conditions, 
+#   re_formula = NULL, method = "predict"
+# )
 #plot(me_loss, ncol = 5, points = TRUE)
 
 # individual level
-pt3<-ggplot(as.data.frame(me_loss$K))+ # pull pur the fitted data
-  geom_line(aes(K-273.15, estimate__, group = cond__, color = cond__, lwd = 1))+ # convert temp to celcius
-  geom_point(data = Species.selected, aes(x = K-273.15, y = log.rate)) +# add the raw data
-  theme_bw()+
-  scale_color_brewer(palette = "Set2")+
-  xlab(expression(paste('Temperature (',~degree,'C)')))+
-  ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
-  theme(text = element_text(size=18),legend.position = "none", title = element_text(face="italic"))+
-  ggtitle(spec.name)
+# pt3<-ggplot(as.data.frame(me_loss$K))+ # pull pur the fitted data
+#   geom_line(aes(K-273.15, estimate__, group = cond__, color = cond__, lwd = 1))+ # convert temp to celcius
+#   geom_point(data = Species.selected, aes(x = K-273.15, y = log.rate)) +# add the raw data
+#   theme_bw()+
+#   scale_color_brewer(palette = "Set2")+
+#   xlab(expression(paste('Temperature (',~degree,'C)')))+
+#   ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
+#   theme(text = element_text(size=18),legend.position = "none", title = element_text(face="italic"))+
+#   ggtitle(spec.name)
 
 # plot the individual effects
 # conditions <- data.frame(Species = unique(Acali$Species))
@@ -226,14 +243,28 @@ pt4<-Species.selected %>%
   scale_color_brewer(palette = "Set2")+
   theme_bw()+ xlab(expression(paste('Temperature (',~degree,'C)')))+
   ylab(expression(paste('Log respiration rate (', mu, "mol cm"^-2, 'hr'^-1,")")))+
-  theme(text = element_text(size=18),legend.position = "none", title = element_text(face="italic"))+
-  ggtitle(spec.name)
+  theme(text = element_text(size=18),legend.position = "none", title = element_text(face="italic"))
+  #ggtitle(spec.name)
 
+TPC_plots1<-plot_grid(pt2, pt4, labels = 'AUTO')
+title <- ggdraw() + draw_label(spec.name, fontface='italic')
+TPC_plots<-plot_grid(title, TPC_plots1, nrow = 2 , rel_heights=c(0.1, 1))
+ggsave(filename = paste0('Output/TPC_plots/TPC_',spec.name,'.pdf'), plot = TPC_plots, width = 8, height = 5)
 
 # calculate 95%Ci
 params<-fit1 %>%
   gather_draws( b_E_Intercept, b_Eh_Intercept, b_lnc_Intercept, b_Th_Intercept, sd_Organism.ID__lnc_Intercept, sigma, Topt) %>%
   median_qi()
+
+return(params)
+}
+
+#Run Bayesian TPC for all species, export plots, and save the 95% CI of each parameter
+Param.output<-mydata %>%
+  filter(Species != 'Acali') %>% # do everything but Acali for now
+  group_by(Species) %>%
+  do(BayeTPC(mydata = ., SpeciesName = unique(.$Species)))
+
 
 # find Tmax
 ## UNCOMMENT THIS WHEN IT STOPS CRASHING
