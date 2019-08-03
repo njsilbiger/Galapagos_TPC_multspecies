@@ -123,6 +123,7 @@ BayeTPC<-function(mydata = mydata, SpeciesName,  PlotDiagnostics = TRUE, PlotRes
 Species.selected<-mydata[mydata$Species==SpeciesName,]
 spec.name<-unique(Species.selected$Species.Fullname)
 y<-Species.selected$log.rate
+LD<-unique(Species.selected$Light_Dark) # light or dark for the algae
 
 options("scipen"=100,digits=12) # stan doesnt like scientific notation. This fixes that
 
@@ -151,7 +152,7 @@ fit1<-brm(
               prior(normal(320, 10), nlpar = "Th", lb = 0),
               prior(normal(0, 10), nlpar = "lnc", lb = 0)
             ), control = list(adapt_delta = 0.99, max_treedepth = 20), # force stan to take smaller steps to reduce divergent errors
-  cores = 4, chains = 4, seed = 126, iter = 3000, warmup = 2000,stanvars = stanvars) 
+  cores = 4, chains = 4, seed = 126, iter = 3000, warmup = 2000,stanvars = stanvars, silent = TRUE) 
 
 
 if (PlotDiagnostics==TRUE){
@@ -166,7 +167,7 @@ post %>% select( nu, sigma,b_lnc_Intercept, b_Eh_Intercept,b_Th_Intercept,b_E_In
 # plotting one at a time
 #plot(fit1,'b_lnc_Intercept')
 # plot the traceplots
-pdf(paste0('Output/diagnostics/traceplots_',spec.name,'.pdf'))
+pdf(paste0('Output/diagnostics/traceplots_',spec.name,LD,'.pdf'))
 plot(fit1, ask = FALSE, newpage = FALSE) # all of them
 dev.off()
 
@@ -182,13 +183,14 @@ ppcheckfig<-plot_grid(check1, check2, check3, labels = 'AUTO', nrow = 1 )
 title <- ggdraw() + draw_label(spec.name, fontface='italic')
 ppcheckf<-plot_grid(title, ppcheckfig,nrow = 2 , rel_heights=c(0.1, 1))
   
-ggsave(filename = paste0('Output/diagnostics/ppchecks_',spec.name,'.pdf'),plot = ppcheckf, width = 9, height = 6 )
+ggsave(filename = paste0('Output/diagnostics/ppchecks_',spec.name,LD,'.pdf'),plot = ppcheckf, width = 9, height = 6 )
 
 }
 
+if (PlotResults == TRUE){
 ### plot the results
 # plot the population level effects
-#pt1<-marginal_effects(fit1)
+pt1<-marginal_effects(fit1)
 
  #population level 
 pt2<-ggplot(as.data.frame(pt1$K))+ # pull pur the fitted data
@@ -249,21 +251,27 @@ pt4<-Species.selected %>%
 TPC_plots1<-plot_grid(pt2, pt4, labels = 'AUTO')
 title <- ggdraw() + draw_label(spec.name, fontface='italic')
 TPC_plots<-plot_grid(title, TPC_plots1, nrow = 2 , rel_heights=c(0.1, 1))
-ggsave(filename = paste0('Output/TPC_plots/TPC_',spec.name,'.pdf'), plot = TPC_plots, width = 8, height = 5)
-
+ggsave(filename = paste0('Output/TPC_plots/TPC_',spec.name,LD,'.pdf'), plot = TPC_plots, width = 8, height = 5)
+}
 # calculate 95%Ci
 params<-fit1 %>%
   gather_draws( b_E_Intercept, b_Eh_Intercept, b_lnc_Intercept, b_Th_Intercept, sd_Organism.ID__lnc_Intercept, sigma, Topt) %>%
   median_qi()
 
 return(params)
+# print when each species is done
+print(paste(spec.name, 'is done'))
+
 }
+
+#Same functions, but skips over species with an error
+BayeTPC_noerror <- possibly(BayeTPC, otherwise = NULL)
 
 #Run Bayesian TPC for all species, export plots, and save the 95% CI of each parameter
 Param.output<-mydata %>%
-  filter(Species != 'Acali') %>% # do everything but Acali for now
-  group_by(Species) %>%
-  do(BayeTPC(mydata = ., SpeciesName = unique(.$Species)))
+  filter(Species == 'Acali'| Species == 'Padi') %>% # do everything but Acali for now
+  group_by(Species, Light_Dark) %>%
+  do(BayeTPC_noerror(mydata = ., SpeciesName = unique(.$Species)))
 
 
 # find Tmax
