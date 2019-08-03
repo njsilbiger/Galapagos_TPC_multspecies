@@ -214,7 +214,7 @@ pt3<-ggplot(as.data.frame(me_loss$K))+ # pull pur the fitted data
 # plot(me_loss, ncol = 2, points = TRUE)
 
 # plot all the fits on the same plot with error
-Species.selected %>%
+pt4<-Species.selected %>%
   group_by(Organism.ID) %>%
   data_grid(K = seq(min(K),max(K)+10, by = 0.1)) %>% # make the predictions go to 10 degrees plus 
   #data_grid(K = seq_range(K+10, n = 150)) %>%
