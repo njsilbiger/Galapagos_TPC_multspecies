@@ -34,7 +34,7 @@ Sp.info<-read.csv('Data/SpeciesList.csv')
 # list of files to remove 
 BadData<-read.csv('Data/quality_control_inverts.csv')
 
-## remove the bad data after QC #################
+## remove the bad data after QC ################# (i.e. citter kept touching O2 probe giving unreliable measurements)
 badrows<-which(photo.data$ID %in% BadData$ID)
 
 photo.data<-photo.data[-badrows,]
@@ -49,18 +49,23 @@ mydata <- photo.data
 bad<-which(mydata$umol.cm2.hr< 0)
 mydata<-mydata[-bad,]
 
-## might need to add this back
+## removing clear outliers in the data. Probably because the critter touched the probed
  bad1<-c( which(mydata$Species=='Bgran' & mydata$umol.cm2.hr>70), 
          which(mydata$Species=='Secu' & mydata$umol.cm2.hr>700), which(mydata$Species=='Ltube' & mydata$umol.cm2.hr>31),
-         which(mydata$Species=='Tcoc' & mydata$umol.cm2.hr<5),which(mydata$Species=='Egala2' & mydata$umol.cm2.hr<6 & mydata$Temp.C>30),
+         which(mydata$Species=='Tcoc' & mydata$umol.cm2.hr<5),which(mydata$Species=='Egala2' & mydata$umol.cm2.hr<10 & mydata$Temp.C>30 & mydata$Temp.C<40),
          which(mydata$Species=='Cfusc' & mydata$umol.cm2.hr>400)
          )
  mydata<-mydata[-bad1,]
 
 ggplot(mydata) +
-  geom_point(aes(x = Temp.C, y = umol.cm2.hr, group =Species ))+
+  geom_point(aes(x = Temp.C, y = umol.cm2.hr, group =Organism.ID ))+
+  geom_line(aes(x = Temp.C, y = umol.cm2.hr, group =Organism.ID ))+
   facet_wrap(~Species, scales = "free_y")
 
+
+# Egala was done twice, because the first time was methods testing.  Remove the first time and keep the second
+mydata<-mydata %>%
+  filter(Species != "Egala")
 
 #join with the mydata
 mydata<-left_join(mydata,Sp.info)
@@ -83,18 +88,18 @@ mydata$Fragment.ID<-factor(paste0(mydata$Organism.ID, "_", mydata$rate.type))
 #rename dataframe to work from Photo.R2 to preserve Photo.R
 #make column for GP and group by fragment ID and temp to keep R and NP together
 Photo.R2 <- mydata %>%
-  filter(Functional.group=='Producer') %>%  # only do this for the producers since they are the only ones that photosynthesize
-  group_by(Organism.ID, Temp.Cat, Species) %>% 
-  summarize(rates = sum(umol.cm2.hr), Temp.C=mean(Temp.C)) %>%
-  mutate(rate.type="GP", Light_Dark="Light") %>%  
-  rename(umol.cm2.hr=rates) %>%
-  mutate(Fragment.ID=paste0(Organism.ID, "_", rate.type)) %>%
-  left_join(.,Sp.info)
+  dplyr::filter(Functional.group=='Producer') %>%  # only do this for the producers since they are the only ones that photosynthesize
+  dplyr::group_by(Organism.ID, Temp.Cat, Species) %>% 
+  dplyr::summarize(rates = sum(umol.cm2.hr), Temp.C=mean(Temp.C)) %>%
+  dplyr::mutate(rate.type="GP", Light_Dark="Light") %>%  
+  dplyr::rename(umol.cm2.hr=rates) %>%
+  dplyr::mutate(Fragment.ID=paste0(Organism.ID, "_", rate.type)) %>%
+  dplyr::left_join(.,Sp.info)
 
 # put in the full species names for light
 algaenames<-mydata %>%
-  filter(Functional.group=='Producer' & Light_Dark=='Dark') %>%
-  select(Species.Fullname, Species)%>%
+  dplyr::filter(Functional.group=='Producer' & Light_Dark=='Dark') %>%
+  dplyr::select(Species.Fullname, Species)%>%
   unique()
 
 for(i in 1:length(algaenames)){
@@ -443,6 +448,12 @@ phylagplot<-ggplot(pca.all, color =Phylum)+
 pcaplot<-plot_grid(habplot, fungplot, phylagplot, nrow =1)
 ggsave(filename = 'Output/resultplots/pcaplots.pdf', plot = pcaplot, width = 12, height = 3)
 
+
+### bring in functional data
+fundata<-read.csv('Data/Inverts_List_Physio_12_Jan.csv')
+fundata$X<-NULL
+
+View(left_join(Param.output, fundata))
 # make a dendrogram https://jcoliver.github.io/learn-r/008-ggplot-dendrograms-and-heatmaps.html
 # find Tmax
 ## UNCOMMENT THIS WHEN IT STOPS CRASHING
