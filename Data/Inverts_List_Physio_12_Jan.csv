@@ -1,28 +1,27 @@
-SPECIES NAMES,COMMON NAME,HABITAT,PHYLA ,CODE,Habitat,Intertidal,Functional group,Autotrophic,Height,Width,Habitat forming ,Zooxanthellate,Substrate attachment,Reproduction 1,Reproduction 2,Skeleton/calcification,Physically defended,Abundance,Mobile,
-Anthopleura nigrescens,Sea anemone,Intertidal,Cnidaria,Anigr,intertidal rocky,yes,filter feeder ,no,1.2,1.8,yes,yes,yes,brooder,sexual,none,no,common,no,
-Aplidium californicum,Tunicate,Subtidal,Chordata,Acali,vertical wall,no,filter feeder ,no,1.7,8.1,yes,no,yes,brooder,both ,none,yes,common,no,
-Bunodosoma grandis,Galápagos sea anemone,Subtidal,Cnidaria,Bgran,rocky reef,no,filter feeder ,no,1.4,2.4,yes,yes,yes,brooder,sexual ,none,no,common,no,
-Calcinus explorator,Orange-tipped hermit crab,Intertidal,Arthropoda,Cexpl,intertidal rocky,yes,filter feeder ,no,1.9,3.2,no,no,no,brooder,sexual,external,yes,common,yes,
-Columbella fuscata,Bunt dove shell,Intertidal,Mollusca,Cfusc,intertidal rocky,yes,carnivore,no,0.8,1.6,no,no,no,brooder,sexual,external,yes,common,yes,
-Didemnum sp.,Tunicate,Subtidal,Chordata,Bdide,vertical wall,no,filter feeder ,no,0.3,36.5,yes,no,yes,brooder,both ,none,yes,common,no,
-Eucidaris galapagensis 1,Pencil sea urchin,Subtidal,Echinodermata,Egala,rocky reef,no,herbivore,no,8.9,11.6,no,no,no,broadcaster ,sexual,internal,yes,common,yes,
-Eucidaris galapagensis 2,Pencil sea urchin,Subtidal,Echinodermata,Egala,rocky reef,no,herbivore,no,8.9,11.6,no,no,no,broadcaster ,sexual,internal,yes,common,yes,
-Eurythoe complanata,Polychaete,Intertidal,Annelid,Ecomp,intertidal rocky,yes,carnivore,no,0.7,8.6,no,no,no,broadcaster ,sexual,internal,yes,common,yes,
-Fissurella obscura,Limpet,Intertidal,Mollusc,Fobsc,intertidal rocky,yes,herbivore,no,0.5,1.5,no,no,no,broadcaster ,sexual,external,yes,common,yes,
-Gracilaria sp.,Red branching algae,Subtidal,Rhodophyta,Grac,rocky reef,no,p producer,yes,10.3,9.6,yes,no,yes,broadcaster ,both ,none,no,medium ,no,
-Grapsus grapsus,Sally lightfood crab,Intertidal,Arthropoda,Ggrap,intertidal rocky,yes,detritivore,no,6.2,14.9,no,no,no,brooder,sexual,external,yes,common,yes,
-Leucozonia tuberculata,Shell snail,Subtidal,Mollusca,Ltube,rocky reef,no,carnivore,no,1.3,2.6,no,no,no,brooder,sexual,external,yes,common,yes,
-Lytechinus semituberculatus,Green urchin,Subtidal,Echinodermata,Lsemi,rocky reef,no,herbivore,no,4.8,7.2,no,no,no,broadcaster ,sexual,internal,yes,common,yes,
-Pacifigorgia rubripunctata,Sea fan,Subtidal,Cnidaria,Prubr,vertical wall,no,filter feeder ,no,14.5,17.2,yes,no,yes,brooder,both ,internal,no,common,no,
-Padina sp.,Brown algae,Subtidal,Ochrophyta,Padi,rocky reef,no,p producer,yes,14.3,19.1,yes,no,yes,broadcaster ,sexual ,none,no,common,no,
-Palythoa tuberculosa,Zoanthid,Subtidal,Cnidaria,Ptube,vertical wall,no,filter feeder ,no,0.3,46.9,yes,no,yes,broadcaster ,both ,none,yes,common,no,
-Radsia goodallii ,Chiton,Intertidal,Mollusca,Tmelo,intertidal rocky,yes,carnivore,no,0.9,7.8,no,no,no,broadcaster ,sexual,external,yes,common,yes,
-Sargassum sp.,Brown long algae,Subtidal,Ochrophyta,Sarg,rocky reef,no,p producer,yes,45.8,20.4,yes,no,no,brooder,sexual,none,no,common,no,
-Schizymenia ecuadoreana,Red long-bladed algae,Subtidal,Rhodophyta,Secu,rocky reef,no,p producer,yes,15.6,13.4,yes,no,yes,broadcaster ,both ,none,no,common,no,
-Thais planospira,Rocksnail Eye of Judas,Subtidal,Mollusca,Tplan,rocky reef,no,carnivore,no,2.7,5.1,no,no,no,direct development ,sexual,external,yes,medium ,yes,
-Tubastraea coccinea,Cup coral,Subtidal,Cnidaria,Tcoc,rocky reef,no,filter feeder ,no,1.9,4.9,no,no,yes,brooder,both ,external,yes,common,no,
-Ulva sp.,Green foliose algae,Subtidal,Chlorophyta,Ulva,rocky reef,no,p producer,yes,3.2,5.0,yes,no,yes,broadcaster ,both ,none,no,common,no,
-Unknown orange sponge,Orange sponge,Subtidal,Porifera,Ukred,vertical wall,no,filter feeder ,no,3.0,23.7,yes,no,yes,brooder,both ,none,yes,common,no,
-Unknown red sponge,Red sponge,Subtidal,Porifera,Ukorg,vertical wall,no,filter feeder ,no,0.2,26.3,yes,no,yes,brooder,both ,none,yes,common,no,
-Vasula melones ,Apple rocksnail,Intertidal,Mollusca,Tmelo,intertidal rocky,yes,carnivore,no,2.0,3.3,no,no,no,direct development ,sexual,external,yes,common,yes,
-Xanthodius cooksoni,Stone crab,Intertidal,Arthropoda,Xcook,intertidal rocky,yes,carnivore,no,2.0,4.1,no,no,no,brooder,sexual,external,yes,medium ,yes,
+Species.Fullname,CommonName,Phylum ,Species,Habitat_minor,Intertidal,Functional.group,Autotrophic,Height,Width,Habitat forming ,Zooxanthellate,Substrate attachment,Reproduction 1,Reproduction 2,Skeleton/calcification,Physically defended,Abundance,Mobile
+Anthopleura nigrescens,Sea anemone,Cnidaria,Anigr,intertidal rocky,yes,Filter feeder ,no,1.2,1.8,yes,yes,yes,brooder,sexual,none,no,common,no
+Aplidium californicum,Tunicate,Chordata,Acali,subtidal vertical wall,no,Filter feeder ,no,1.7,8.1,yes,no,yes,brooder,both ,none,yes,common,no
+Bunodosoma grandis,Galápagos sea anemone,Cnidaria,Bgran,rocky reef,no,Filter feeder ,no,1.4,2.4,yes,yes,yes,brooder,sexual ,none,no,common,no
+Calcinus explorator,Orange-tipped hermit crab,Arthropoda,Cexpl,intertidal rocky,yes,Filter feeder ,no,1.9,3.2,no,no,no,brooder,sexual,external,yes,common,yes
+Columbella fuscata,Burnt dove shell,Mollusca,Cfusc,intertidal rocky,yes,Carnivore,no,0.8,1.6,no,no,no,brooder,sexual,external,yes,common,yes
+Didemnum sp.,Tunicate,Chordata,Bdide,subtidal vertical wall,no,Filter feeder ,no,0.3,36.5,yes,no,yes,brooder,both ,none,yes,common,no
+Eucidaris galapagensis,Pencil sea urchin,Echinodermata,Egala,rocky reef,no,Herbivore,no,8.9,11.6,no,no,no,broadcaster ,sexual,internal,yes,common,yes
+Eurythoe complanata,Polychaete,Annelid,Ecomp,intertidal rocky,yes,Carnivore,no,0.7,8.6,no,no,no,broadcaster ,sexual,internal,yes,common,yes
+Fissurella obscura,Limpet,Mollusc,Fobsc,intertidal rocky,yes,Herbivore,no,0.5,1.5,no,no,no,broadcaster ,sexual,external,yes,common,yes
+Gracilaria sp.,Red branching algae,Rhodophyta,Grac,rocky reef,no,Producer,yes,10.3,9.6,yes,no,yes,broadcaster ,both ,none,no,medium ,no
+Grapsus grapsus,Sally lightfood crab,Arthropoda,Ggrap,intertidal rocky,yes,Detritivore,no,6.2,14.9,no,no,no,brooder,sexual,external,yes,common,yes
+Leucozonia tuberculata,Shell snail,Mollusca,Ltube,rocky reef,no,Carnivore,no,1.3,2.6,no,no,no,brooder,sexual,external,yes,common,yes
+Lytechinus semituberculatus,Green urchin,Echinodermata,Lsemi,rocky reef,no,Herbivore,no,4.8,7.2,no,no,no,broadcaster ,sexual,internal,yes,common,yes
+Pacifigorgia machalilla,Sea fan,Cnidaria,Prubr,subtidal vertical wall,no,Filter feeder ,no,14.5,17.2,yes,no,yes,brooder,both ,internal,no,common,no
+Padina sp.,Brown algae,Ochrophyta,Padi,rocky reef,no,Producer,yes,14.3,19.1,yes,no,yes,broadcaster ,sexual ,none,no,common,no
+Palythoa tuberculosa,Zoanthid,Cnidaria,Ptube,subtidal vertical wall,no,Filter feeder ,no,0.3,46.9,yes,no,yes,broadcaster ,both ,none,yes,common,no
+Radsia goodallii ,Galápagos Giant Chiton,Mollusca,Tmelo,intertidal rocky,yes,Carnivore,no,0.9,7.8,no,no,no,broadcaster ,sexual,external,yes,common,yes
+Sargassum sp.,Brown long algae,Ochrophyta,Sarg,rocky reef,no,Producer,yes,45.8,20.4,yes,no,no,brooder,sexual,none,no,common,no
+Schizymenia ecuadoreana,Red long-bladed algae,Rhodophyta,Secu,rocky reef,no,Producer,yes,15.6,13.4,yes,no,yes,broadcaster ,both ,none,no,common,no
+Thais planospira,Rocksnail Eye of Judas,Mollusca,Tplan,rocky reef,no,Carnivore,no,2.7,5.1,no,no,no,direct development ,sexual,external,yes,medium ,yes
+Tubastraea coccinea,Cup coral,Cnidaria,Tcoc,rocky reef,no,Filter feeder ,no,1.9,4.9,no,no,yes,brooder,both ,external,yes,common,no
+Ulva sp.,Green foliose algae,Chlorophyta,Ulva,rocky reef,no,Producer,yes,3.2,5,yes,no,yes,broadcaster ,both ,none,no,common,no
+Unknown orange sponge,Orange sponge,Porifera,Ukred,subtidal vertical wall,no,Filter feeder ,no,3,23.7,yes,no,yes,brooder,both ,none,yes,common,no
+Unknown red sponge,Red sponge,Porifera,Ukorg,subtidal vertical wall,no,Filter feeder ,no,0.2,26.3,yes,no,yes,brooder,both ,none,yes,common,no
+Vasula melones ,Apple rocksnail,Mollusca,Tmelo,intertidal rocky,yes,Carnivore,no,2,3.3,no,no,no,direct development ,sexual,external,yes,common,yes
+Xanthodius cooksoni,Stone crab,Arthropoda,Xcook,intertidal rocky,yes,Carnivore,no,2,4.1,no,no,no,brooder,sexual,external,yes,medium ,yes
