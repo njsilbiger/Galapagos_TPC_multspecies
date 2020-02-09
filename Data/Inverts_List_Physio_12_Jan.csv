@@ -1,4 +1,4 @@
-SPECIES NAMES,COMMON NAME,HABITAT,PHYLA ,CODE,Habitat,Intertidal,Functional group,Autotrophic,Height,Width,Habitat forming ,Zooxanthellate,Substrate attachment,Reproduction 1,Reproduction 2,Skeleton/calcification,Physically defended,Abundance,Mobile,
+Species.fullname,COMMON NAME,HABITAT,PHYLA ,Species,Habitat,Intertidal,Functional group,Autotrophic,Height,Width,Habitat forming ,Zooxanthellate,Substrate attachment,Reproduction 1,Reproduction 2,Skeleton/calcification,Physically defended,Abundance,Mobile,
 Anthopleura nigrescens,Sea anemone,Intertidal,Cnidaria,Anigr,intertidal rocky,yes,filter feeder ,no,1.2,1.8,yes,yes,yes,brooder,sexual,none,no,common,no,
 Aplidium californicum,Tunicate,Subtidal,Chordata,Acali,vertical wall,no,filter feeder ,no,1.7,8.1,yes,no,yes,brooder,both ,none,yes,common,no,
 Bunodosoma grandis,Galápagos sea anemone,Subtidal,Cnidaria,Bgran,rocky reef,no,filter feeder ,no,1.4,2.4,yes,yes,yes,brooder,sexual ,none,no,common,no,
