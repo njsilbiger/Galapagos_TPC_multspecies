@@ -19,7 +19,6 @@ if ("tidyverse" %in% rownames(installed.packages()) == 'FALSE') install.packages
 #Read in required libraries
 ##### Include Versions of libraries
 #install_github('colin-olito/LoLinR')
-library("ggplot2")
 library("segmented")
 library("plotrix")
 library("gridExtra")
@@ -30,8 +29,6 @@ library('plyr')
 library('tidyverse')
 
 ##### PHOTOSYNTHESIS AND RESPIRATION #####
-#path.p<-"../Panama/Data/Panama experiment_1117/Panama Physiology Data" #the location of all your respirometry files 
-
 # get the file path
 RPROJ <- list(PROJHOME = normalizePath(getwd()))
 attach(RPROJ)
@@ -48,12 +45,11 @@ Photo.R <- data.frame(matrix(NA, nrow=length(file.names), ncol=5))
 colnames(Photo.R) <- c("ID","Intercept", "umol.L.sec","Temp.C","Light_Dark") # name the columns
 
 #Load Sample Info
-#Sample.Info <- read.csv(file=paste0(path.p,"/../Panama MetaData/Nubbin_Sample_Info_T0_Panama_QC.csv"), header=T) #read sample.info data
-Sample.Info <- read.csv(file=paste0(path.p,"/../metadata.csv"), header=T) #read sample.info data
+Sample.Info <- read.csv("Data/metadata.csv", header=T) #read sample.info data
 
 
 # load surface area data
-SA <- read.csv(file=paste0(path.p,"/../Species Burn Volumes_ Galapagos Summer 18_oct.csv"), header=T) #read sample.info data
+SA <- read.csv("Data/Species Burn Volumes_ Galapagos Summer 18_oct.csv", header=T) #read sample.info data
 # add 610 ml to the NAs in volume (the blanks)
 #Calculat the volume of water
 SA$Volume<-610-SA$Initial.Volume..ml.
@@ -146,8 +142,6 @@ write.csv(Photo.R, 'Output/Photo.R.csv')
 
 # Calculate P and R rate
 
-#Photo.R$Fragment.ID.full<-Photo.R$ID
-#Photo.R$Fragment.ID<-NULL
 Photo.R$Light_Dark<-NULL
 
 Photo.R<-left_join(Photo.R, Sample.Info)
@@ -160,11 +154,13 @@ Photo.R$umol.sec <- Photo.R$umol.L.sec*Photo.R$Vol.L
 #Account for blank rate by temerature
 #convert character columns to factors
 Photo.R <- Photo.R %>%
-  mutate_if(sapply(., is.character), as.factor)
+  mutate_if(is.character, as.factor)
 # make the blank column a factor
 Photo.R$Blank<-as.factor(Photo.R$Blank)
 
-photo.blnk <- aggregate(umol.sec ~ Species*Temp.Cat*Light_Dark*Blank, data=Photo.R, mean)
+#photo.blnk <- aggregate(umol.sec ~ Species*Temp.Cat*Light_Dark*Blank, data=Photo.R, mean)
+photo.blnk <- aggregate(umol.sec ~ Blank*Temp.Cat, data=Photo.R, mean)
+
 # pull out only the blanks
 #photo.blnk<-photo.blnk[photo.blnk$Species=='BK',]
 photo.blnk<-photo.blnk[photo.blnk$Blank==1,]
@@ -174,7 +170,7 @@ photo.blnk<-photo.blnk[photo.blnk$Blank==1,]
 # remove the blank column
 photo.blnk$Blank<-NULL
 
-colnames(photo.blnk)[4]<-'blank.rate' # rename the blank rate 
+colnames(photo.blnk)[2]<-'blank.rate' # rename the blank rate 
 # join the blank data with the rest of the data
 Photo.R<-left_join(Photo.R, photo.blnk)
 
@@ -184,10 +180,12 @@ Photo.R$umol.sec.corr<-Photo.R$umol.sec-Photo.R$blank.rate
 #### Normalize to organic biomass (ash free dry weight)#####
 
 #Calculate net P and R
-Photo.R$umol.cm2.hr <- (Photo.R$umol.sec.corr*3600)/Photo.R$AFDW #mmol cm-2 hr-1
+Photo.R$umol.cm2.hr <- (Photo.R$umol.sec.corr*3600)/Photo.R$AFDW #mmol g-1 hr-1
 
 #Photo.R<-Photo.R[complete.cases(Photo.R),] # remove NAs and blanks
 Photo.R<-Photo.R[Photo.R$Blank==0,]
+# remove NAs
+Photo.R<-Photo.R[-which(is.na(Photo.R$Light_Dark)),]
 
 #make respiration positive
 #Photo.R$umol.cm2.hr[Photo.R$PR=='Respiration']<-abs(Photo.R$umol.cm2.hr[Photo.R$PR=='Respiration'])
@@ -204,12 +202,12 @@ Photo.R$umol.cm2.hr[Photo.R$Light_Dark=='Dark']<- -Photo.R$umol.cm2.hr[Photo.R$L
 #facet_wrap(~ Species, labeller = labeller(.multi_line = FALSE))
   
 
-write.csv(Photo.R, 'GalapagosRates.csv') # export all the uptake rates
+write.csv(Photo.R, 'Data/GalapagosRates.csv') # export all the uptake rates
 
 
 PhotoMeans<- Photo.R %>%
   group_by(Species, Temp.Cat, Light_Dark)%>%
-  summarise(rates.mean = mean(umol.cm2.hr), se = sd(umol.cm2.hr)/sqrt(n()))
+  dplyr::summarise(rates.mean = mean(umol.cm2.hr), se = sd(umol.cm2.hr)/sqrt(n()))
 
 
 
@@ -217,10 +215,12 @@ PhotoMeans<- Photo.R %>%
 ggplot()+
   theme_bw()+  
   geom_point(data=Photo.R, aes(x=Temp.Cat, y=umol.cm2.hr, group=c(Species), col = Organism.ID, alpha = 0.05), position = position_dodge(width = 0.2), size=4)+
-  geom_point(data=PhotoMeans, aes(x=Temp.Cat, y=rates.mean, group=c(Species)), position = position_dodge(width = 0.2), size=4)+
+  geom_line(data=Photo.R, aes(x=Temp.Cat, y=umol.cm2.hr, group=c(Organism.ID), col = Organism.ID, alpha = 0.05), position = position_dodge(width = 0.2))+
+  
+ # geom_point(data=PhotoMeans, aes(x=Temp.Cat, y=rates.mean, group=c(Species)), position = position_dodge(width = 0.2), size=4)+
   geom_line(data = PhotoMeans,  aes(x=Temp.Cat, y=rates.mean, group=c(Species)), position = position_dodge(width = 0.2), size=4)+
-  geom_errorbar(data = PhotoMeans, aes(x = Temp.Cat, ymin=rates.mean-se, ymax=rates.mean+se, group=c(Species)), width=.2,
-                position=position_dodge(.9)) +
+ # geom_errorbar(data = PhotoMeans, aes(x = Temp.Cat, ymin=rates.mean-se, ymax=rates.mean+se, group=c(Species)), width=.2,
+#                position=position_dodge(.9)) +
   facet_wrap(~ Species*Light_Dark, labeller = labeller(.multi_line = FALSE), scales = 'free')+
   theme(legend.position = "none")+
   ggsave('RespirationRates.png', width = 15, height = 15)

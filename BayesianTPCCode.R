@@ -19,6 +19,9 @@ library(tidybayes)
 library(modelr)
 library(bayesplot)
 library(cowplot)
+library(ade4)
+library(factoextra)
+library(patchwork)
 
 
 #load data ########################
@@ -29,12 +32,13 @@ photo.data$X <- NULL
 #glimpse(photo.data)
 
 # species list
-Sp.info<-read.csv('Data/SpeciesList.csv')
+Sp.info<-read.csv('Data/Inverts_List_Physio_12_Jan.csv')
+#Sp.info<-read.csv('Data/SpeciesList.csv')
 
 # list of files to remove 
 BadData<-read.csv('Data/quality_control_inverts.csv')
 
-## remove the bad data after QC #################
+## remove the bad data after QC ################# (i.e. citter kept touching O2 probe giving unreliable measurements)
 badrows<-which(photo.data$ID %in% BadData$ID)
 
 photo.data<-photo.data[-badrows,]
@@ -49,18 +53,23 @@ mydata <- photo.data
 bad<-which(mydata$umol.cm2.hr< 0)
 mydata<-mydata[-bad,]
 
-## might need to add this back
- bad1<-c( which(mydata$Species=='Bgran' & mydata$umol.cm2.hr>70), 
+## removing clear outliers in the data. Probably because the critter touched the probed
+ bad1<-c( which(mydata$Species=='Bgran' & mydata$umol.cm2.hr>70), which(mydata$Species=='Secu' & mydata$umol.cm2.hr>200 & mydata$Light_Dark=='Dark'),
          which(mydata$Species=='Secu' & mydata$umol.cm2.hr>700), which(mydata$Species=='Ltube' & mydata$umol.cm2.hr>31),
-         which(mydata$Species=='Tcoc' & mydata$umol.cm2.hr<5),which(mydata$Species=='Egala2' & mydata$umol.cm2.hr<6 & mydata$Temp.C>30),
+         which(mydata$Species=='Tcoc' & mydata$umol.cm2.hr<5),which(mydata$Species=='Egala2' & mydata$umol.cm2.hr<10 & mydata$Temp.C>30 & mydata$Temp.C<40),
          which(mydata$Species=='Cfusc' & mydata$umol.cm2.hr>400)
          )
  mydata<-mydata[-bad1,]
 
 ggplot(mydata) +
-  geom_point(aes(x = Temp.C, y = umol.cm2.hr, group =Species ))+
-  facet_wrap(~Species, scales = "free_y")
+  geom_point(aes(x = Temp.C, y = umol.cm2.hr, group =Organism.ID ))+
+  geom_line(aes(x = Temp.C, y = umol.cm2.hr, group =Organism.ID ))+
+  facet_wrap(~Species*Light_Dark, scales = "free_y")
 
+
+# Egala was done twice, because the first time was methods testing.  Remove the first time and keep the second
+mydata<-mydata %>%
+  filter(Species != "Egala")
 
 #join with the mydata
 mydata<-left_join(mydata,Sp.info)
@@ -83,18 +92,18 @@ mydata$Fragment.ID<-factor(paste0(mydata$Organism.ID, "_", mydata$rate.type))
 #rename dataframe to work from Photo.R2 to preserve Photo.R
 #make column for GP and group by fragment ID and temp to keep R and NP together
 Photo.R2 <- mydata %>%
-  filter(Functional.group=='Producer') %>%  # only do this for the producers since they are the only ones that photosynthesize
-  group_by(Organism.ID, Temp.Cat, Species) %>% 
-  summarize(rates = sum(umol.cm2.hr), Temp.C=mean(Temp.C)) %>%
-  mutate(rate.type="GP", Light_Dark="Light") %>%  
-  rename(umol.cm2.hr=rates) %>%
-  mutate(Fragment.ID=paste0(Organism.ID, "_", rate.type)) %>%
-  left_join(.,Sp.info)
+  dplyr::filter(Functional.group=='Producer') %>%  # only do this for the producers since they are the only ones that photosynthesize
+  dplyr::group_by(Organism.ID, Temp.Cat, Species) %>% 
+  dplyr::summarize(rates = sum(umol.cm2.hr), Temp.C=mean(Temp.C)) %>%
+  dplyr::mutate(rate.type="GP", Light_Dark="Light") %>%  
+  dplyr::rename(umol.cm2.hr=rates) %>%
+  dplyr::mutate(Fragment.ID=paste0(Organism.ID, "_", rate.type)) %>%
+  dplyr::left_join(.,Sp.info)
 
 # put in the full species names for light
 algaenames<-mydata %>%
-  filter(Functional.group=='Producer' & Light_Dark=='Dark') %>%
-  select(Species.Fullname, Species)%>%
+  dplyr::filter(Functional.group=='Producer' & Light_Dark=='Dark') %>%
+  dplyr::select(Species.Fullname, Species)%>%
   unique()
 
 for(i in 1:length(algaenames)){
@@ -124,6 +133,11 @@ mydata<-mydata %>%
 
 #log rate
 mydata$log.rate<-log(mydata$umol.cm2.hr+1)
+
+## temporarily remove Fobsc_1 because I think the burn volume is off by an order of magintude
+
+mydata<-mydata %>%
+  filter(Organism.ID != "Fobsc_1")
 
 #### Run Bayesian analysis ##############
 
@@ -298,7 +312,7 @@ Param.output<-mydata %>%
   group_by(Species, rate.type) %>%
   do(BayeTPC_noerror(mydata = ., SpeciesName = unique(.$Species)))
 
-write.csv(Param.output, file = 'Data/paramoutput.csv', row.names = NULL) # write out the results
+write.csv(Param.output, file = 'Data/paramoutput.csv', row.names = FALSE) # write out the results
   # nest() %>%
   # mutate(params =  data %>%
   #          map(BayeTPC_noerror(mydata = data, SpeciesName = unique(.$Species), 
@@ -367,7 +381,7 @@ paramplots2<-Param.output %>%
   filter(rate.type == 'R')%>%
   group_by(.variable) %>%
   nest() %>%
-  mutate(plot = map2(data, .variable, ~ggplot(., aes(x=reorder(Species, -.value), y=.value, color = Habitat)) +
+  mutate(plot = map2(data, .variable, ~ggplot(., aes(x=reorder(Species, -.value), y=.value, color = Habitat_minor)) +
                        theme_bw()+
                        theme(legend.title=element_text(colour="black", size=12), axis.text.x=element_text(face="bold", color="black", size=12), axis.text.y=element_text(face="bold", color="black", size=13), axis.title.x = element_text(color="black", size=18, face="bold"), axis.title.y = element_text(color="black", size=18, face="bold"),panel.grid.major=element_blank(), panel.grid.minor=element_blank()) +
                        geom_point(position="dodge", size=2) +
@@ -397,10 +411,15 @@ Param.spread<-Param.output %>%
   filter(rate.type=="R") %>%
   spread(.variable, .value)
 
-pca<-prcomp(Param.spread[,c(8:10,14)], center = TRUE, scale. = TRUE)
+
+pcadata<-Param.spread%>%
+  ungroup()%>%
+  select(starts_with("b_"), "Topt")
+
+pca<-prcomp(pcadata, center = TRUE, scale. = TRUE)
 
 # bring together the PCA with the species info
-pca.all<-cbind(pca$x, Param.spread[, c(1:7)])
+pca.all<-bind_cols(data.frame(pca$x[,1:2]), Param.spread)
 
 # get the loadings
 df_out_r <- as.data.frame(pca$rotation)
@@ -408,9 +427,9 @@ df_out_r$feature <- row.names(df_out_r)
 
 #pca.all<-pca.all[-18,]
 # PCA by habitat
-habplot<-ggplot(pca.all, color =Habitat)+
-  geom_point(aes(x = PC1, y = PC2, color = Habitat))+
-  stat_ellipse(aes(x = PC1, y = PC2, color = Habitat))+
+habplot<-ggplot(pca.all, color =Intertidal)+
+  geom_point(aes(x = PC1, y = PC2, color = Intertidal, shape  = Habitat.forming))+
+ # stat_ellipse(aes(x = PC1, y = PC2, color = Intertidal))+
   geom_segment(data = df_out_r, aes(x = 0, y = 0,xend=PC1*3, yend=PC2*3))+
   geom_text(data = df_out_r, aes(x=PC1*3, y=PC2*3,label = feature))+
   theme_bw()+
@@ -442,6 +461,210 @@ phylagplot<-ggplot(pca.all, color =Phylum)+
 
 pcaplot<-plot_grid(habplot, fungplot, phylagplot, nrow =1)
 ggsave(filename = 'Output/resultplots/pcaplots.pdf', plot = pcaplot, width = 12, height = 3)
+
+
+#### Try functioninal diversity analyses #####
+# pull out the trait data and make the rownames  species names
+traits<- Param.spread %>%
+  filter(Species != "Cgood")%>% # temporary until we get this data
+  column_to_rownames(var = "Species") %>%
+  select(Habitat_minor:Mobile)
+
+## pull out tpc stuff
+tpcvals<-Param.spread %>%
+  filter(Species != "Cgood")%>% # temporary until we get this data
+    column_to_rownames(var = "Species") %>%
+  select(b_E_Intercept:Topt)
+
+## take traits and follow Pavoine et al. 2009 Oikos
+
+
+## First separate nominal, ordinal, and quantitative data
+# Nominal
+Tnom<-traits %>%
+  select(Habitat_minor, Intertidal, Functional.group, Autotrophic, Habitat.forming, Zooxanthellate, Substrate.attachment, Reproduction.1, Reproduction.2, Skeleton.calcification, Physically.defended, Mobile)
+# Ordinal
+# convert abundance into 1, 2, 3 for ordinal
+traits$Abundance<-as.integer(ifelse(traits$Abundance=="medium", 2,3)) # low will be 1 if we have any
+Tord<- traits %>%
+  select(Abundance)
+# Quantitative
+Tquant<- Param.spread %>%
+  filter(Species != 'Cgood') %>%
+  column_to_rownames(var = "Species") %>%
+  select(Height, Width, Topt, b_E_Intercept, b_lnc_Intercept)
+
+# bring everything together as a list (the ordinal data is causing NAs... will need to look into that)
+ktab1 <- ktab.list.df(list(Tnom, Tquant))
+distrait <- dist.ktab(ktab1, c("N", "Q"))
+is.euclid(distrait) # yes, is euclidean
+
+contrib <- kdist.cor(ktab1, type = c("N",  "Q"), labels = list(names(ktab1$Ana1), names(ktab1$Ana2)))
+contrib
+dotchart(sort(contrib$glocor), labels = rownames(contrib$glocor)[order(contrib$glocor[, 1])])
+
+# Lingoes (1971) transformation for Euclidean distances
+#disl <- lingoes(distrait) ## data are euclidean so I dont think I have to do this.
+# Principal Coordinates Analysis
+pcodisl <- dudi.pco(distrait, scan = F)
+barplot(pcodisl$eig) # Eigenvalue barplot
+s.label(pcodisl$li, clabel = 0.7) # PCoA plot in base
+
+# The variables can be displayed on the factorial maps,
+# by using the functions s.class and s.distri
+# For example,
+s.class(pcodisl$li, traits$Mobile, sub = "Mobile") # grouped by mobile
+s.class(pcodisl$li, traits$Intertidal, sub = "Intertidal") # grouped by intertidal
+# Correlation circle of variables
+s.corcircle(pcodisl$co)
+scatter(pcodisl)
+
+# make a ggplot and color points by Topt
+ggplot() +
+  coord_fixed() + 
+  labs(x="Comp1, Axis1", y="Comp2, Axis2") +
+  geom_hline(yintercept=0, col="darkgrey") + 
+  geom_vline(xintercept=0, col="darkgrey") + 
+  geom_point(data=data.frame(pcodisl$li, rownames(traits)), 
+                 aes(x=A1, y=A2, col=tpcvals$b_lnc_Intercept), size=5, alpha=0.5) +
+  labs(title="MDS with unweighted UniFrac distance")
+
+## pca with covariance matrix.  Not sure if I can do this.  Have to check
+pc.test<-prcomp(contrib$paircor)
+
+
+### Look at some univariate stats
+Param.spread<-Param.spread %>%
+  drop_na()%>%
+  droplevels()
+  
+# Are there significant differences in Topt between mobile and sessile critters?
+mob1<-lm(Topt~Mobile,data = Param.spread)
+qqnorm(resid(mob1))
+qqline(resid(mob1))
+anova(mob1)
+
+mob1<-lm(b_E_Intercept~Mobile,data = Param.spread)
+qqnorm(resid(mob1))
+qqline(resid(mob1))
+anova(mob1)
+
+# Topt
+Topt_mo<-ggplot(Param.spread)+
+  geom_boxplot(aes(Mobile, Topt), fill= 'lightblue')+
+  labs(y=expression(T[opt]), x = 'Mobile')+
+  theme_minimal()
+
+#activtion energy
+Ea_mo<-ggplot(Param.spread)+
+  geom_boxplot(aes(Mobile, b_E_Intercept), fill= 'pink')+
+  labs(y=expression(E[a]), x = 'Mobile')+
+  theme_minimal()
+
+Topt_mo+Ea_mo & theme_minimal()
+
+
+#Intertidal?
+int1<-lm(Topt~Intertidal,data = Param.spread)
+qqnorm(resid(int1))
+qqline(resid(int1))
+anova(int1)
+
+int1<-lm(b_E_Intercept~Intertidal,data = Param.spread)
+qqnorm(resid(int1))
+qqline(resid(int1))
+anova(int1)
+
+# Topt
+Topt_int<-ggplot(Param.spread)+
+  geom_boxplot(aes(Intertidal, Topt), fill= 'lightblue')+
+  labs(y=expression(T[opt]), x = 'Intertidal')+
+theme_minimal()
+
+#activtion energy
+Ea_int<-ggplot(Param.spread)+
+  geom_boxplot(aes(Intertidal, b_E_Intercept), fill= 'pink')+
+  labs(y=expression(E[a]), x = 'Intertidal')+
+theme_minimal()
+
+Topt_int+Ea_int & theme_minimal()
+
+
+# Skeleton?
+Skel1<-lm(Topt~Skeleton.calcification,data = Param.spread)
+qqnorm(resid(Skel1))
+qqline(resid(Skel1))
+anova(Skel1)
+
+Skel1<-lm(b_E_Intercept~Skeleton.calcification,data = Param.spread)
+qqnorm(resid(Skel1))
+qqline(resid(Skel1))
+anova(Skel1)
+
+# Topt
+Topt_sc<-ggplot(Param.spread)+
+  geom_boxplot(aes(Skeleton.calcification, Topt), fill= 'lightblue')+
+  labs(y=expression(T[opt]), x = 'Skeletal Calcification')+
+  theme_minimal()
+  
+#activtion energy
+Ea_sc<-ggplot(Param.spread)+
+  geom_boxplot(aes(Skeleton.calcification, b_E_Intercept), fill= 'pink')+
+  labs(y=expression(E[a]), x = 'Skeletal Calcification')+
+  theme_minimal()
+
+(Topt_sc+Ea_sc)/(Topt_mo+Ea_mo)/(Topt_int+Ea_int)
+
+# Physically defended?
+PD1<-lm(Topt~Physically.defended,data = Param.spread)
+qqnorm(resid(PD1))
+qqline(resid(PD1))
+anova(PD1)
+
+PD1<-lm(b_E_Intercept~Physically.defended,data = Param.spread)
+qqnorm(resid(PD1))
+qqline(resid(PD1))
+anova(PD1)
+
+# Topt
+Topt_PD<-ggplot(Param.spread)+
+  geom_boxplot(aes(Physically.defended, Topt), fill= 'lightblue')+
+  labs(y=expression(T[opt]), x = 'Physically Defended')+
+  theme_minimal()
+
+#activtion energy
+Ea_PD<-ggplot(Param.spread)+
+  geom_boxplot(aes(Physically.defended, b_E_Intercept), fill= 'pink')+
+  labs(y=expression(E[a]), x = 'Physically Defended')+
+  theme_minimal()
+
+plot_comb<-(Topt_sc+Ea_sc)/(Topt_mo+Ea_mo)/(Topt_int+Ea_int)/(Topt_PD+Ea_PD)
+ggsave(plot_comb, filename = "Output/traitplot.png", width = 5, height = 9)
+
+# width
+width1<-lm(Topt~Width,data = Param.spread)
+qqnorm(resid(width1))
+qqline(resid(width1))
+anova(width1)
+
+width1<-lm(b_E_Intercept~Width,data = Param.spread)
+qqnorm(resid(width1))
+qqline(resid(width1))
+anova(width1)
+
+# Topt
+Topt_width<-ggplot(Param.spread)+
+  geom_point(aes(Width, Topt))+
+  labs(y=expression(T[opt]), x = 'Width')+
+  theme_minimal()
+
+#activtion energy
+Ea_Width<-ggplot(Param.spread)+
+  geom_point(aes(Width, b_E_Intercept), fill= 'pink')+
+  labs(y=expression(E[a]), x = 'Width')+
+  theme_minimal()
+
+
 
 # make a dendrogram https://jcoliver.github.io/learn-r/008-ggplot-dendrograms-and-heatmaps.html
 # find Tmax
